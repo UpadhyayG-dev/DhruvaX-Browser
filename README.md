@@ -1,60 +1,57 @@
-# DhruvaX-Browser
-DhruvaX Browser: A fast and secure 'Made in India' web browser based on Chromium. Jai Hind! 🇮🇳
-DhruvaX Browser 🇮🇳
-Fastest + Security | An initiative by UPADHYAYG.
+## Spàrsh — Open-source browser UI (web + Windows + Android)
 
-DhruvaX is a fast, secure, and open-source web browser built for India, by India. Our mission is to provide a truly 'Made in India' browsing experience that prioritizes user privacy, speed, and features relevant to the Indian user. We are building on the robust foundation of the Chromium project to ensure world-class performance and compatibility.
+Spàrsh faithfully reproduces the visual design, layout, interactions, and UX of Comet Browser while using the Spàrsh brand (logo, name, colors). It prioritizes pixel-accurate UI, smooth animations, and the same information architecture (tabs, address bar, new-tab shortcuts, private mode, downloads, history, settings).
 
-Launch Date: 19th July 2025
+Built as a web app (React + Vite) embedded into Electron (Windows) and Capacitor (Android).
 
-✨ Features (VISHESHATAEIN)
-🔒 Ultimate Privacy: Built-in Ad-blocker and Tracker-blocker enabled by default.
+### Features
+- Tabs with private mode
+- Omnibox (search or URL) with Google/Duck/Brave engines
+- New Tab page with shortcuts
+- History and Downloads panels
+- Settings panel
 
-🛡️ Desi Suraksha: A special database to identify and block phishing websites targeting Indian users.
+### Quickstart
 
-⚡ Blazing Fast: Optimized for performance, even on low-data connections.
+Prereqs: Node 18+, npm.
 
-🇮🇳 India-First Integrations: Quick access to essential Indian services like DigiLocker, UPI platforms, and more.
+Install deps and build web:
 
-🌐 Multi-Language Support: Excellent support and rendering for major Indian languages.
+```bash
+npm install
+npm run build:web
+```
 
-🎨 Custom Themes: Dynamic themes that celebrate Indian festivals and culture.
+Run web dev server:
 
-🚀 Getting Started & How to Contribute
-We are building a community of passionate developers to make DhruvaX a reality. If you believe in the vision of a self-reliant India, we invite you to contribute!
+```bash
+npm run dev:web
+```
 
-1. Fork the Repository:
-Click the 'Fork' button at the top right of this page.
+Run Electron (Windows packaging supported via electron-builder):
 
-2. Clone your Fork:
+```bash
+npm run dev # starts web + launches Electron once Vite is up
+npm run package:windows # builds Windows portable .exe (run on Windows)
+```
 
-git clone https://github.com/UpadhyayG-dev/DhruvaX-Browser.git
+Android (requires Android Studio and SDKs on your machine):
 
-3. Build the Project:
-(Detailed build instructions will be added here soon. We will be following the standard Chromium build process.)
+```bash
+npm run build:web
+npm run cap:android:sync
+npm --workspace apps/android run open # opens Android Studio project
+```
 
-4. Make your Changes and Submit a Pull Request!
+### Repository structure
 
-We welcome all contributions, from fixing bugs and improving documentation to building new features.
+```
+apps/
+  web/       # React UI (Vite)
+  desktop/   # Electron wrapper + packaging
+  android/   # Capacitor project and config
+```
 
-🗺️ Project Roadmap
-Our goal is to launch the first public version of DhruvaX on 19th July 2025.
+### License
 
-[✅] Phase 1: Research & Team Building (Completed)
-
-[✅] Phase 2: First Prototype (MVP) (Completed)
-
-[✅] Phase 3: Testing & Website Setup (Completed)
-
-[In Progress] Phase 4: Public Launch & Marketing
-
-❤️ Support the Project
-DhruvaX is a community-driven project. You can support us by:
-
-⭐ Starring this repository!
-
-🗣️ Spreading the word on social media.
-
-contributiing code or ideas.
-
-Jai Hind!
+This project is licensed under the Apache License 2.0. See `LICENSE`.

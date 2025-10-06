@@ -1,0 +1,37 @@
+name: build-android
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Install dependencies
+        run: npm ci
+      - name: Build web
+        run: npm run build:web
+      - name: Sync Capacitor Android
+        run: npm run cap:android:sync
+      - name: Grant execute for Gradle
+        run: chmod +x ./apps/android/android/gradlew
+      - name: Build APK (debug)
+        run: ./apps/android/android/gradlew assembleDebug
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sparsh-android-apk
+          path: apps/android/android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error

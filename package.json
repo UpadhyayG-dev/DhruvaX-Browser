@@ -1,0 +1,25 @@
+{
+  "name": "sparsh",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Spàrsh — open-source browser UI (web + desktop + android)",
+  "license": "Apache-2.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -k \"npm --workspace apps/web run dev\" \"npm --workspace apps/desktop run dev\"",
+    "dev:web": "npm --workspace apps/web run dev",
+    "build:web": "npm --workspace apps/web run build",
+    "preview:web": "npm --workspace apps/web run preview",
+    "dev:desktop": "npm --workspace apps/desktop run dev",
+    "build:desktop": "npm --workspace apps/desktop run build",
+    "package:windows": "npm --workspace apps/desktop run dist",
+    "cap:android:sync": "npm --workspace apps/android run sync",
+    "cap:android:open": "npm --workspace apps/android run open",
+    "build:android": "npm run build:web && npm --workspace apps/android run sync"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "sparsh-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Spàrsh desktop wrapper (Electron)",
+  "author": "Spàrsh Contributors",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "wait-on http://localhost:5173 && electron .",
+    "build": "electron-builder --dir",
+    "dist": "electron-builder -w"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "31.4.0",
+    "electron-builder": "^25.1.8",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.sparsh.browser",
+    "productName": "Sparsh",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      { "from": "../web/dist", "to": "web" }
+    ],
+    "win": {
+      "target": ["portable"],
+      "artifactName": "Sparsh-${version}.exe"
+    }
+  }
+}
