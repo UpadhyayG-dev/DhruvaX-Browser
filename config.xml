@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.sparsh.browser" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>Spàrsh Browser</name>
+    <description>A free, open-source web browser</description>
+    <author email="team@sparsh.browser" href="https://sparsh.browser">
+        Spàrsh Browser Team
+    </author>
+    <content src="src/index.html" />
+    <plugin name="cordova-plugin-whitelist" spec="^1.3.5" />
+    <plugin name="cordova-plugin-inappbrowser" spec="^5.0.0" />
+    <plugin name="cordova-plugin-file" spec="^8.0.0" />
+    <plugin name="cordova-plugin-device" spec="^2.1.0" />
+
+    <!-- Android specific configuration -->
+    <platform name="android">
+        <allow-intent href="http://*/*" />
+        <allow-intent href="https://*/*" />
+        <allow-intent href="mailto:*" />
+        <allow-intent href="tel:*" />
+        <allow-navigation href="http://*/*" />
+        <allow-navigation href="https://*/*" />
+        <preference name="Orientation" value="default" />
+        <preference name="Fullscreen" value="false" />
+        <preference name="AndroidLaunchMode" value="singleTask" />
+        <icon src="assets/icon.png" />
+        <splash src="assets/splash.png" />
+    </platform>
+
+    <!-- iOS specific configuration (for future use) -->
+    <platform name="ios">
+        <allow-intent href="http://*/*" />
+        <allow-intent href="https://*/*" />
+        <allow-intent href="mailto:*" />
+        <allow-intent href="tel:*" />
+        <allow-navigation href="http://*/*" />
+        <allow-navigation href="https://*/*" />
+    </platform>
+
+    <access origin="*" />
+    <allow-navigation href="*" />
+</widget>

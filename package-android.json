@@ -1,0 +1,30 @@
+{
+  "name": "sparsh-browser",
+  "version": "1.0.0",
+  "description": "Spàrsh - A free, open-source web browser for Android",
+  "main": "src/index.html",
+  "scripts": {
+    "build": "cordova build android",
+    "run": "cordova run android",
+    "prepare": "cordova prepare"
+  },
+  "dependencies": {
+    "cordova": "^12.0.0",
+    "cordova-android": "^12.0.0",
+    "cordova-plugin-whitelist": "^1.3.5",
+    "cordova-plugin-inappbrowser": "^5.0.0",
+    "cordova-plugin-file": "^8.0.0",
+    "cordova-plugin-device": "^2.1.0"
+  },
+  "cordova": {
+    "platforms": [
+      "android"
+    ],
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-file": {},
+      "cordova-plugin-device": {}
+    }
+  }
+}

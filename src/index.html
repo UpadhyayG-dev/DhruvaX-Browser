@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spàrsh Browser</title>
+
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts: Inter for clean UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Android-specific styles -->
+    <link rel="stylesheet" href="android-styles.css">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <style>
+        /* Custom scrollbar for webview content */
+        webview::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        webview::-webkit-scrollbar-track {
+            background: #1f2937; /* gray-800 */
+        }
+
+        webview::-webkit-scrollbar-thumb {
+            background-color: #374151; /* gray-700 */
+            border-radius: 4px;
+        }
+
+        webview::-webkit-scrollbar-thumb:hover {
+            background-color: #4b5563; /* gray-600 */
+        }
+
+        /* Tab styling */
+        .tab {
+            transition: all 0.2s ease-in-out;
+        }
+
+        .tab.active {
+            background-color: #1f2937;
+            color: #60a5fa;
+            border-bottom: 2px solid #60a5fa;
+        }
+
+        .tab:hover:not(.active) {
+            background-color: #374151;
+        }
+
+        /* Address bar styling */
+        .address-bar {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+
+        /* Spàrsh brand colors */
+        :root {
+            --sparsh-primary: #6366f1;
+            --sparsh-secondary: #8b5cf6;
+            --sparsh-accent: #06b6d4;
+            --sparsh-success: #10b981;
+            --sparsh-warning: #f59e0b;
+            --sparsh-error: #ef4444;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Custom focus styles */
+        .focus-ring:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--sparsh-primary);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white font-sans antialiased overflow-hidden">
+    <!-- Main Browser Window -->
+    <div class="flex flex-col h-screen bg-gray-900">
+        <!-- Title Bar (Windows/Linux style) -->
+        <header class="bg-gray-800 border-b border-gray-700 flex items-center justify-between px-4 py-2 flex-shrink-0" id="titleBar">
+            <!-- Left side - Window controls and logo -->
+            <div class="flex items-center gap-4">
+                <!-- Logo and brand -->
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-bolt text-white text-sm"></i>
+                    </div>
+                    <span class="text-lg font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                        Spàrsh
+                    </span>
+                </div>
+
+                <!-- Tab bar -->
+                <div class="flex items-center gap-1 overflow-x-auto max-w-md" id="tabBar">
+                    <div class="tab active flex-shrink-0 px-3 py-2 rounded-t-lg cursor-pointer fade-in" data-tab="0">
+                        <i class="fas fa-home mr-2"></i>
+                        New Tab
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center - Navigation controls -->
+            <div class="flex items-center gap-2">
+                <button id="backBtn" class="w-8 h-8 rounded-md bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button id="forwardBtn" class="w-8 h-8 rounded-md bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white flex items-center justify-center transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button id="refreshBtn" class="w-8 h-8 rounded-md bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white flex items-center justify-center transition-all">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+
+            <!-- Right side - Menu and controls -->
+            <div class="flex items-center gap-2">
+                <button id="bookmarkBtn" class="w-8 h-8 rounded-md bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-yellow-400 flex items-center justify-center transition-all">
+                    <i class="far fa-star"></i>
+                </button>
+                <button id="menuBtn" class="w-8 h-8 rounded-md bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white flex items-center justify-center transition-all">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Address Bar -->
+        <nav class="bg-gray-800 border-b border-gray-700 px-4 py-3 flex-shrink-0" id="addressNav">
+            <div class="flex items-center gap-3">
+                <!-- Security indicator -->
+                <div class="flex items-center gap-2 text-sm text-gray-400">
+                    <i class="fas fa-lock text-green-400"></i>
+                    <span class="text-xs">Secure</span>
+                </div>
+
+                <!-- Address bar -->
+                <div class="flex-1 relative">
+                    <input type="text"
+                           id="addressBar"
+                           class="w-full bg-gray-900 text-white rounded-lg py-2.5 pl-4 pr-12 focus:outline-none focus:ring-2 focus:ring-indigo-500 border border-gray-600 focus:border-indigo-500 address-bar"
+                           placeholder="Search or enter address"
+                           autocomplete="off">
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                        <button id="bookmarkAddBtn" class="text-gray-400 hover:text-yellow-400 transition-colors" title="Add bookmark">
+                            <i class="fas fa-star text-sm"></i>
+                        </button>
+                        <button id="settingsBtn" class="text-gray-400 hover:text-indigo-400 transition-colors" title="Settings">
+                            <i class="fas fa-cog text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="flex items-center gap-1">
+                    <button id="homeBtn" class="w-8 h-8 rounded-md bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white flex items-center justify-center transition-all" title="Home">
+                        <i class="fas fa-home"></i>
+                    </button>
+                    <button id="downloadsBtn" class="w-8 h-8 rounded-md bg-gray-700 hover:bg-gray-600 text-gray-300 hover:text-white flex items-center justify-center transition-all" title="Downloads">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Navigation Bar -->
+        <nav class="bg-gray-800 border-t border-gray-700 px-4 py-2 flex items-center justify-around flex-shrink-0 md:hidden" id="bottomNav">
+            <button id="mobileBackBtn" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors" title="Back">
+                <i class="fas fa-arrow-left"></i>
+                <span class="text-xs">Back</span>
+            </button>
+            <button id="mobileForwardBtn" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors" title="Forward">
+                <i class="fas fa-arrow-right"></i>
+                <span class="text-xs">Forward</span>
+            </button>
+            <button id="mobileRefreshBtn" class="flex flex-col items-center gap-1 text-gray-400 hover:text-white transition-colors" title="Refresh">
+                <i class="fas fa-redo"></i>
+                <span class="text-xs">Refresh</span>
+            </button>
+            <button id="mobileBookmarkBtn" class="flex flex-col items-center gap-1 text-gray-400 hover:text-yellow-400 transition-colors" title="Bookmarks">
+                <i class="fas fa-star"></i>
+                <span class="text-xs">Bookmarks</span>
+            </button>
+            <button id="mobileMenuBtn" class="flex flex-col items-center gap-1 text-gray-400 hover:text-indigo-400 transition-colors" title="Menu">
+                <i class="fas fa-ellipsis-h"></i>
+                <span class="text-xs">Menu</span>
+            </button>
+        </nav>
+
+        <!-- Content Area -->
+        <main class="flex-1 bg-gray-900 relative">
+            <!-- Loading overlay -->
+            <div id="loadingOverlay" class="absolute inset-0 bg-gray-900 flex items-center justify-center z-50 hidden">
+                <div class="text-center">
+                    <div class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p class="text-gray-400">Loading...</p>
+                </div>
+            </div>
+
+            <!-- Webview container -->
+            <div id="webviewContainer" class="w-full h-full md:h-full" style="height: calc(100vh - 200px);">
+                <webview id="mainWebview"
+                         class="w-full h-full"
+                         src="https://www.google.com"
+                         preload="./preload.js"
+                         webpreferences="nodeIntegration=false, contextIsolation=true"
+                         partition="persist:main">
+                </webview>
+            </div>
+
+            <!-- Context menu overlay -->
+            <div id="contextMenu" class="absolute bg-gray-800 border border-gray-700 rounded-lg shadow-xl py-2 min-w-48 hidden z-50">
+                <div class="px-4 py-2 text-sm font-medium text-gray-400 uppercase tracking-wide">Page</div>
+                <button class="context-item w-full text-left px-4 py-2 hover:bg-gray-700 text-white flex items-center gap-3">
+                    <i class="fas fa-arrow-left w-4"></i>
+                    Back
+                </button>
+                <button class="context-item w-full text-left px-4 py-2 hover:bg-gray-700 text-white flex items-center gap-3">
+                    <i class="fas fa-arrow-right w-4"></i>
+                    Forward
+                </button>
+                <button class="context-item w-full text-left px-4 py-2 hover:bg-gray-700 text-white flex items-center gap-3">
+                    <i class="fas fa-redo w-4"></i>
+                    Reload
+                </button>
+                <hr class="border-gray-700 my-2">
+                <button class="context-item w-full text-left px-4 py-2 hover:bg-gray-700 text-white flex items-center gap-3">
+                    <i class="fas fa-copy w-4"></i>
+                    Copy
+                </button>
+                <button class="context-item w-full text-left px-4 py-2 hover:bg-gray-700 text-white flex items-center gap-3">
+                    <i class="fas fa-search w-4"></i>
+                    Search Google
+                </button>
+            </div>
+        </main>
+
+        <!-- Status Bar -->
+        <footer class="bg-gray-800 border-t border-gray-700 px-4 py-2 text-sm text-gray-400 flex items-center justify-between flex-shrink-0">
+            <div class="flex items-center gap-4">
+                <span id="statusText">Ready</span>
+                <div class="flex items-center gap-2" id="securityInfo">
+                    <i class="fas fa-lock text-green-400"></i>
+                    <span>Secure Connection</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <span id="zoomLevel">100%</span>
+                <button id="zoomOutBtn" class="w-6 h-6 rounded hover:bg-gray-700 flex items-center justify-center">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <button id="zoomInBtn" class="w-6 h-6 rounded hover:bg-gray-700 flex items-center justify-center">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals and overlays will go here -->
+    <div id="modalOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50"></div>
+
+    <!-- Bookmarks Modal -->
+    <div id="bookmarksModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+        <div class="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col">
+            <header class="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-white">Bookmarks</h2>
+                <button class="text-gray-400 hover:text-white" onclick="closeBookmarksModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </header>
+            <div class="flex-1 overflow-y-auto p-6">
+                <div id="bookmarksList" class="space-y-2">
+                    <!-- Bookmarks will be populated here -->
+                </div>
+            </div>
+            <footer class="px-6 py-4 border-t border-gray-700 flex justify-end gap-3">
+                <button class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors" onclick="closeBookmarksModal()">
+                    Close
+                </button>
+                <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors" onclick="addCurrentPageBookmark()">
+                    Add Current Page
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 flex items-center justify-center hidden z-50">
+        <div class="bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col">
+            <header class="px-6 py-4 border-b border-gray-700 flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-white">Settings</h2>
+                <button class="text-gray-400 hover:text-white" onclick="closeSettingsModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </header>
+            <div class="flex-1 overflow-y-auto p-6">
+                <div class="space-y-6">
+                    <!-- General Settings -->
+                    <div>
+                        <h3 class="text-lg font-medium text-white mb-4">General</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Home Page</label>
+                                <input type="url" id="homePageInput" class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:border-indigo-500 focus:outline-none" placeholder="https://www.google.com">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Search Engine</label>
+                                <select id="searchEngineSelect" class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:border-indigo-500 focus:outline-none">
+                                    <option value="https://www.google.com/search?q=">Google</option>
+                                    <option value="https://www.bing.com/search?q=">Bing</option>
+                                    <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy Settings -->
+                    <div>
+                        <h3 class="text-lg font-medium text-white mb-4">Privacy</h3>
+                        <div class="space-y-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" id="blockAds" class="mr-3 text-indigo-600 focus:ring-indigo-500 rounded">
+                                <span class="text-gray-300">Block ads and trackers</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" id="clearHistory" class="mr-3 text-indigo-600 focus:ring-indigo-500 rounded">
+                                <span class="text-gray-300">Clear browsing history on exit</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Appearance Settings -->
+                    <div>
+                        <h3 class="text-lg font-medium text-white mb-4">Appearance</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Theme</label>
+                                <select id="themeSelect" class="w-full bg-gray-700 text-white rounded-lg px-3 py-2 border border-gray-600 focus:border-indigo-500 focus:outline-none">
+                                    <option value="system">System</option>
+                                    <option value="light">Light</option>
+                                    <option value="dark">Dark</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="px-6 py-4 border-t border-gray-700 flex justify-end gap-3">
+                <button class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors" onclick="closeSettingsModal()">
+                    Cancel
+                </button>
+                <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors" onclick="saveSettings()">
+                    Save Changes
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentTab = 0;
+        let tabs = [{
+            id: 0,
+            title: 'New Tab',
+            url: 'https://www.google.com',
+            webview: null
+        }];
+        let bookmarks = [];
+        let history = [];
+        let settings = {
+            homePage: 'https://www.google.com',
+            searchEngine: 'https://www.google.com/search?q=',
+            theme: 'system',
+            blockAds: false,
+            clearHistory: false
+        };
+
+        // DOM elements
+        const mainWebview = document.getElementById('mainWebview');
+        const addressBar = document.getElementById('addressBar');
+        const backBtn = document.getElementById('backBtn');
+        const forwardBtn = document.getElementById('forwardBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const bookmarkBtn = document.getElementById('bookmarkBtn');
+        const bookmarkAddBtn = document.getElementById('bookmarkAddBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const downloadsBtn = document.getElementById('downloadsBtn');
+        const menuBtn = document.getElementById('menuBtn');
+        const tabBar = document.getElementById('tabBar');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const statusText = document.getElementById('statusText');
+        const securityInfo = document.getElementById('securityInfo');
+        const zoomLevel = document.getElementById('zoomLevel');
+        const zoomInBtn = document.getElementById('zoomInBtn');
+        const zoomOutBtn = document.getElementById('zoomOutBtn');
+        const contextMenu = document.getElementById('contextMenu');
+        const bookmarksModal = document.getElementById('bookmarksModal');
+        const bookmarksList = document.getElementById('bookmarksList');
+        const settingsModal = document.getElementById('settingsModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+
+        // Initialize the application
+        async function init() {
+            // Load data from main process
+            try {
+                bookmarks = await window.electronAPI.getBookmarks();
+                history = await window.electronAPI.getHistory();
+                settings = await window.electronAPI.getSettings();
+                applySettings();
+            } catch (error) {
+                console.error('Failed to load data:', error);
+            }
+
+            // Setup event listeners
+            setupEventListeners();
+
+            // Load initial page
+            loadPage(settings.homePage);
+        }
+
+        function setupEventListeners() {
+            // Navigation buttons
+            backBtn.addEventListener('click', () => {
+                if (mainWebview.canGoBack()) {
+                    mainWebview.goBack();
+                }
+            });
+
+            forwardBtn.addEventListener('click', () => {
+                if (mainWebview.canGoForward()) {
+                    mainWebview.goForward();
+                }
+            });
+
+            refreshBtn.addEventListener('click', () => {
+                if (mainWebview.isLoading()) {
+                    mainWebview.stop();
+                } else {
+                    mainWebview.reload();
+                }
+            });
+
+            // Address bar
+            addressBar.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const input = addressBar.value.trim();
+                    if (input) {
+                        navigateTo(input);
+                    }
+                }
+            });
+
+            // Home button
+            homeBtn.addEventListener('click', () => {
+                navigateTo(settings.homePage);
+            });
+
+            // Bookmark buttons
+            bookmarkBtn.addEventListener('click', showBookmarksModal);
+            bookmarkAddBtn.addEventListener('click', addCurrentPageBookmark);
+
+            // Settings button
+            settingsBtn.addEventListener('click', showSettingsModal);
+
+            // Downloads button
+            downloadsBtn.addEventListener('click', () => {
+                window.electronAPI.showDownloads();
+            });
+
+            // Menu button
+            menuBtn.addEventListener('click', (e) => {
+                showContextMenu(e);
+            });
+
+            // Mobile navigation buttons
+            const mobileBackBtn = document.getElementById('mobileBackBtn');
+            const mobileForwardBtn = document.getElementById('mobileForwardBtn');
+            const mobileRefreshBtn = document.getElementById('mobileRefreshBtn');
+            const mobileBookmarkBtn = document.getElementById('mobileBookmarkBtn');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+            if (mobileBackBtn) mobileBackBtn.addEventListener('click', () => {
+                if (mainWebview.canGoBack()) mainWebview.goBack();
+            });
+
+            if (mobileForwardBtn) mobileForwardBtn.addEventListener('click', () => {
+                if (mainWebview.canGoForward()) mainWebview.goForward();
+            });
+
+            if (mobileRefreshBtn) mobileRefreshBtn.addEventListener('click', () => {
+                if (mainWebview.isLoading()) {
+                    mainWebview.stop();
+                } else {
+                    mainWebview.reload();
+                }
+            });
+
+            if (mobileBookmarkBtn) mobileBookmarkBtn.addEventListener('click', showBookmarksModal);
+            if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', (e) => {
+                showContextMenu(e);
+            });
+
+            // Zoom controls
+            zoomInBtn.addEventListener('click', () => {
+                const currentZoom = mainWebview.getZoomFactor();
+                mainWebview.setZoomFactor(currentZoom + 0.1);
+                updateZoomLevel();
+            });
+
+            zoomOutBtn.addEventListener('click', () => {
+                const currentZoom = mainWebview.getZoomFactor();
+                mainWebview.setZoomFactor(Math.max(0.3, currentZoom - 0.1));
+                updateZoomLevel();
+            });
+
+            // Webview events
+            mainWebview.addEventListener('did-start-loading', () => {
+                showLoadingState();
+                updateRefreshButton();
+            });
+
+            mainWebview.addEventListener('did-stop-loading', () => {
+                hideLoadingState();
+                updateRefreshButton();
+                updateNavigationButtons();
+                updateAddressBar();
+                updateSecurityInfo();
+                addToHistory();
+            });
+
+            mainWebview.addEventListener('did-navigate', () => {
+                updateAddressBar();
+                updateSecurityInfo();
+            });
+
+            mainWebview.addEventListener('did-navigate-in-page', () => {
+                updateAddressBar();
+            });
+
+            mainWebview.addEventListener('page-title-updated', (e) => {
+                updateTabTitle(currentTab, e.title);
+            });
+
+            mainWebview.addEventListener('new-window', (e) => {
+                e.preventDefault();
+                navigateTo(e.url);
+            });
+
+            // Context menu
+            document.addEventListener('click', (e) => {
+                if (!contextMenu.contains(e.target) && e.target !== menuBtn) {
+                    contextMenu.classList.add('hidden');
+                }
+            });
+
+            // IPC listeners
+            window.electronAPI.onDownloadCompleted((download) => {
+                showNotification(`Download completed: ${download.filename}`);
+            });
+        }
+
+        function navigateTo(input) {
+            let url = input.trim();
+
+            // Add protocol if missing
+            if (!url.match(/^https?:\/\//)) {
+                // Check if it's a search query or URL
+                if (url.includes('.') && !url.includes(' ')) {
+                    url = 'https://' + url;
+                } else {
+                    url = settings.searchEngine + encodeURIComponent(url);
+                }
+            }
+
+            loadPage(url);
+        }
+
+        function loadPage(url) {
+            mainWebview.src = url;
+        }
+
+        function updateAddressBar() {
+            try {
+                const url = mainWebview.src;
+                if (url && url !== 'about:blank') {
+                    addressBar.value = url;
+                }
+            } catch (error) {
+                console.warn('Could not update address bar:', error);
+            }
+        }
+
+        function updateNavigationButtons() {
+            backBtn.disabled = !mainWebview.canGoBack();
+            forwardBtn.disabled = !mainWebview.canGoForward();
+
+            // Update button styles
+            backBtn.classList.toggle('opacity-50', backBtn.disabled);
+            forwardBtn.classList.toggle('opacity-50', forwardBtn.disabled);
+        }
+
+        function updateRefreshButton() {
+            const isLoading = mainWebview.isLoading();
+            const icon = refreshBtn.querySelector('i');
+
+            if (isLoading) {
+                icon.className = 'fas fa-times';
+                refreshBtn.title = 'Stop';
+            } else {
+                icon.className = 'fas fa-redo';
+                refreshBtn.title = 'Refresh';
+            }
+        }
+
+        function updateSecurityInfo() {
+            try {
+                const url = mainWebview.src;
+                const isSecure = url && url.startsWith('https://');
+
+                const icon = securityInfo.querySelector('i');
+                const text = securityInfo.querySelector('span');
+
+                if (isSecure) {
+                    icon.className = 'fas fa-lock text-green-400';
+                    text.textContent = 'Secure Connection';
+                } else if (url && url.startsWith('http://')) {
+                    icon.className = 'fas fa-unlock text-yellow-400';
+                    text.textContent = 'Insecure Connection';
+                } else {
+                    icon.className = 'fas fa-info-circle text-gray-400';
+                    text.textContent = 'Local Page';
+                }
+            } catch (error) {
+                console.warn('Could not update security info:', error);
+            }
+        }
+
+        function updateZoomLevel() {
+            const zoom = Math.round(mainWebview.getZoomFactor() * 100);
+            zoomLevel.textContent = `${zoom}%`;
+        }
+
+        function showLoadingState() {
+            loadingOverlay.classList.remove('hidden');
+            statusText.textContent = 'Loading...';
+        }
+
+        function hideLoadingState() {
+            loadingOverlay.classList.add('hidden');
+            statusText.textContent = 'Ready';
+        }
+
+        function showContextMenu(e) {
+            e.stopPropagation();
+            const rect = menuBtn.getBoundingClientRect();
+            contextMenu.style.left = `${rect.left - 180}px`;
+            contextMenu.style.top = `${rect.bottom + 5}px`;
+            contextMenu.classList.remove('hidden');
+
+            // Setup context menu actions
+            setupContextMenuActions();
+        }
+
+        function setupContextMenuActions() {
+            const contextItems = contextMenu.querySelectorAll('.context-item');
+
+            contextItems.forEach(item => {
+                item.onclick = () => {
+                    const action = item.textContent.trim().toLowerCase();
+                    handleContextAction(action);
+                    contextMenu.classList.add('hidden');
+                };
+            });
+        }
+
+        function handleContextAction(action) {
+            switch (action) {
+                case 'back':
+                    if (mainWebview.canGoBack()) mainWebview.goBack();
+                    break;
+                case 'forward':
+                    if (mainWebview.canGoForward()) mainWebview.goForward();
+                    break;
+                case 'reload':
+                    mainWebview.reload();
+                    break;
+                case 'copy':
+                    navigator.clipboard.writeText(addressBar.value);
+                    showNotification('URL copied to clipboard');
+                    break;
+                case 'search google':
+                    const searchUrl = settings.searchEngine + encodeURIComponent(addressBar.value);
+                    loadPage(searchUrl);
+                    break;
+            }
+        }
+
+        function addToHistory() {
+            try {
+                const url = mainWebview.src;
+                const title = mainWebview.getTitle();
+
+                if (url && url !== 'about:blank' && !url.includes('google.com/search')) {
+                    const historyItem = {
+                        url,
+                        title,
+                        timestamp: Date.now(),
+                        visitCount: 1
+                    };
+
+                    // Check if URL already exists in history
+                    const existingIndex = history.findIndex(item => item.url === url);
+                    if (existingIndex >= 0) {
+                        history[existingIndex].timestamp = Date.now();
+                        history[existingIndex].visitCount++;
+                    } else {
+                        history.unshift(historyItem);
+                    }
+
+                    // Keep only last 1000 items
+                    if (history.length > 1000) {
+                        history = history.slice(0, 1000);
+                    }
+
+                    window.electronAPI.saveHistory(history);
+                }
+            } catch (error) {
+                console.warn('Could not add to history:', error);
+            }
+        }
+
+        function addCurrentPageBookmark() {
+            try {
+                const url = mainWebview.src;
+                const title = mainWebview.getTitle() || url;
+
+                if (url && url !== 'about:blank') {
+                    const bookmark = {
+                        id: Date.now(),
+                        title,
+                        url,
+                        dateAdded: Date.now()
+                    };
+
+                    bookmarks.push(bookmark);
+                    window.electronAPI.saveBookmarks(bookmarks);
+                    renderBookmarks();
+
+                    showNotification('Page bookmarked');
+                    closeBookmarksModal();
+                }
+            } catch (error) {
+                console.error('Could not add bookmark:', error);
+            }
+        }
+
+        function removeBookmark(id) {
+            bookmarks = bookmarks.filter(bookmark => bookmark.id !== id);
+            window.electronAPI.saveBookmarks(bookmarks);
+            renderBookmarks();
+        }
+
+        function renderBookmarks() {
+            bookmarksList.innerHTML = '';
+
+            if (bookmarks.length === 0) {
+                bookmarksList.innerHTML = '<p class="text-gray-400 text-center py-8">No bookmarks yet</p>';
+                return;
+            }
+
+            bookmarks.forEach(bookmark => {
+                const bookmarkEl = document.createElement('div');
+                bookmarkEl.className = 'flex items-center justify-between bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition-colors';
+
+                bookmarkEl.innerHTML = `
+                    <div class="flex-1">
+                        <h3 class="font-medium text-white">${bookmark.title}</h3>
+                        <p class="text-gray-400 text-sm">${bookmark.url}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="text-indigo-400 hover:text-indigo-300" onclick="loadPage('${bookmark.url}')" title="Open">
+                            <i class="fas fa-external-link-alt"></i>
+                        </button>
+                        <button class="text-red-400 hover:text-red-300" onclick="removeBookmark(${bookmark.id})" title="Remove">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+
+                bookmarksList.appendChild(bookmarkEl);
+            });
+        }
+
+        function showBookmarksModal() {
+            renderBookmarks();
+            bookmarksModal.classList.remove('hidden');
+            modalOverlay.classList.remove('hidden');
+        }
+
+        function closeBookmarksModal() {
+            bookmarksModal.classList.add('hidden');
+            modalOverlay.classList.add('hidden');
+        }
+
+        function showSettingsModal() {
+            // Populate form with current settings
+            document.getElementById('homePageInput').value = settings.homePage;
+            document.getElementById('searchEngineSelect').value = settings.searchEngine;
+            document.getElementById('themeSelect').value = settings.theme;
+            document.getElementById('blockAds').checked = settings.blockAds;
+            document.getElementById('clearHistory').checked = settings.clearHistory;
+
+            settingsModal.classList.remove('hidden');
+            modalOverlay.classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            settingsModal.classList.add('hidden');
+            modalOverlay.classList.add('hidden');
+        }
+
+        function saveSettings() {
+            settings = {
+                homePage: document.getElementById('homePageInput').value,
+                searchEngine: document.getElementById('searchEngineSelect').value,
+                theme: document.getElementById('themeSelect').value,
+                blockAds: document.getElementById('blockAds').checked,
+                clearHistory: document.getElementById('clearHistory').checked
+            };
+
+            window.electronAPI.saveSettings(settings);
+            applySettings();
+
+            showNotification('Settings saved');
+            closeSettingsModal();
+        }
+
+        function applySettings() {
+            // Apply theme
+            if (settings.theme === 'dark') {
+                document.body.classList.add('dark');
+            } else if (settings.theme === 'light') {
+                document.body.classList.remove('dark');
+            }
+            // System theme would be handled by CSS media queries
+        }
+
+        function showNotification(message) {
+            // Simple notification system
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-xl z-50 fade-in';
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        function updateTabTitle(tabId, title) {
+            const tab = document.querySelector(`[data-tab="${tabId}"]`);
+            if (tab) {
+                const titleSpan = tab.querySelector('.tab-title') || tab;
+                titleSpan.textContent = title.length > 20 ? title.substring(0, 20) + '...' : title;
+            }
+        }
+
+        // IPC API for communication with main process
+        window.electronAPI = {
+            getBookmarks: () => window.require('electron').ipcRenderer.invoke('get-bookmarks'),
+            saveBookmarks: (bookmarks) => window.require('electron').ipcRenderer.invoke('save-bookmarks', bookmarks),
+            getHistory: () => window.require('electron').ipcRenderer.invoke('get-history'),
+            saveHistory: (history) => window.require('electron').ipcRenderer.invoke('save-history', history),
+            getSettings: () => window.require('electron').ipcRenderer.invoke('get-settings'),
+            saveSettings: (settings) => window.require('electron').ipcRenderer.invoke('save-settings', settings),
+            showDownloads: () => window.require('electron').ipcRenderer.send('show-downloads'),
+            onDownloadCompleted: (callback) => window.require('electron').ipcRenderer.on('download-completed', callback)
+        };
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

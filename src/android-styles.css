@@ -1,0 +1,183 @@
+/* Android-specific styles for Spàrsh Browser */
+
+/* Mobile-first responsive design */
+@media screen and (max-width: 768px) {
+    /* Hide window controls on mobile */
+    #titleBar .window-controls {
+        display: none;
+    }
+
+    /* Adjust header for mobile */
+    #titleBar {
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    }
+
+    /* Mobile tab bar - simplified */
+    #tabBar {
+        display: none; /* Hide tabs on mobile for now */
+    }
+
+    /* Mobile navigation - bottom bar style */
+    #bottomNav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #1f2937;
+        border-top: 1px solid #374151;
+        padding: 0.75rem;
+        justify-content: space-around;
+        z-index: 1000;
+    }
+
+    #bottomNav button {
+        background: none;
+        border: none;
+        color: #9ca3af;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    #bottomNav button:hover,
+    #bottomNav button.active {
+        color: #60a5fa;
+        background: #374151;
+    }
+
+    /* Mobile address bar - full width */
+    #addressBar {
+        font-size: 16px; /* Prevent zoom on iOS */
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
+        margin: 0 1rem;
+        width: calc(100% - 2rem);
+    }
+
+    /* Mobile content area */
+    #webviewContainer {
+        height: calc(100vh - 140px); /* Adjust for mobile UI */
+        margin-bottom: 80px; /* Space for bottom nav */
+    }
+
+    /* Mobile modals - full screen */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #111827;
+        z-index: 9999;
+        padding: 1rem;
+    }
+
+    /* Android status bar styling */
+    .status-bar {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 0.25rem 1rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Android PWA support */
+@media all and (display-mode: standalone) {
+    /* Hide browser UI when installed as PWA */
+    #titleBar {
+        display: none;
+    }
+
+    #webviewContainer {
+        height: 100vh;
+    }
+}
+
+/* Dark theme optimizations for Android */
+@media (prefers-color-scheme: dark) {
+    #titleBar {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
+
+    /* Improve contrast for dark theme */
+    #addressBar {
+        background: #374151;
+        border-color: #4b5563;
+    }
+
+    #addressBar:focus {
+        border-color: #60a5fa;
+        background: #1f2937;
+    }
+}
+
+/* Touch optimizations */
+@media (pointer: coarse) {
+    /* Larger touch targets */
+    button, .btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Remove hover effects on touch devices */
+    .hover\:bg-gray-600:hover {
+        background-color: transparent;
+    }
+
+    /* Active state for touch */
+    button:active, .btn:active {
+        background-color: #374151;
+        transform: scale(0.98);
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    #titleBar {
+        background: #000000;
+        border-bottom: 2px solid #ffffff;
+    }
+
+    #addressBar {
+        background: #ffffff;
+        color: #000000;
+        border: 2px solid #000000;
+    }
+
+    button {
+        border: 1px solid #ffffff;
+        background: #000000;
+        color: #ffffff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .fade-in {
+        animation: none;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    #titleBar {
+        padding: 0.25rem 1rem;
+    }
+
+    #addressBar {
+        padding: 0.5rem 1rem;
+        margin: 0 0.5rem;
+    }
+
+    #webviewContainer {
+        height: calc(100vh - 100px);
+    }
+}
