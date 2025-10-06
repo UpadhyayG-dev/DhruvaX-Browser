@@ -1,60 +1,70 @@
-# DhruvaX-Browser
-DhruvaX Browser: A fast and secure 'Made in India' web browser based on Chromium. Jai Hind! 🇮🇳
-DhruvaX Browser 🇮🇳
-Fastest + Security | An initiative by UPADHYAYG.
+# Spàrsh Browser
 
-DhruvaX is a fast, secure, and open-source web browser built for India, by India. Our mission is to provide a truly 'Made in India' browsing experience that prioritizes user privacy, speed, and features relevant to the Indian user. We are building on the robust foundation of the Chromium project to ensure world-class performance and compatibility.
+A free, open-source web browser that faithfully reproduces the visual design, layout, interactions, and UX of Comet Browser while using the Spàrsh brand.
 
-Launch Date: 19th July 2025
+## Features
 
-✨ Features (VISHESHATAEIN)
-🔒 Ultimate Privacy: Built-in Ad-blocker and Tracker-blocker enabled by default.
+- **Pixel-accurate UI**: Faithful reproduction of Comet Browser's interface
+- **Smooth Animations**: Fluid transitions and interactions
+- **Cross-platform**: Windows and Android support
+- **Modern Architecture**: Built with Electron and React Native
+- **Open Source**: MIT licensed with full source code available
 
-🛡️ Desi Suraksha: A special database to identify and block phishing websites targeting Indian users.
+## Core Features
 
-⚡ Blazing Fast: Optimized for performance, even on low-data connections.
+- Tab management with visual previews
+- Address bar with search suggestions
+- Private browsing mode
+- Download manager
+- History and bookmarks
+- Settings and preferences
+- New tab shortcuts and customization
 
-🇮🇳 India-First Integrations: Quick access to essential Indian services like DigiLocker, UPI platforms, and more.
+## Installation
 
-🌐 Multi-Language Support: Excellent support and rendering for major Indian languages.
+### Windows
+Download the latest release from the [Releases](https://github.com/sparsh-browser/sparsh-browser/releases) page.
 
-🎨 Custom Themes: Dynamic themes that celebrate Indian festivals and culture.
+### Android
+Install the APK from the [Releases](https://github.com/sparsh-browser/sparsh-browser/releases) page.
 
-🚀 Getting Started & How to Contribute
-We are building a community of passionate developers to make DhruvaX a reality. If you believe in the vision of a self-reliant India, we invite you to contribute!
+## Development
 
-1. Fork the Repository:
-Click the 'Fork' button at the top right of this page.
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Android Studio (for Android builds)
+- Visual Studio (for Windows builds)
 
-2. Clone your Fork:
+### Setup
+```bash
+git clone https://github.com/sparsh-browser/sparsh-browser.git
+cd sparsh-browser
+npm install
+```
 
-git clone https://github.com/UpadhyayG-dev/DhruvaX-Browser.git
+### Running
+```bash
+# Development mode
+npm run dev
 
-3. Build the Project:
-(Detailed build instructions will be added here soon. We will be following the standard Chromium build process.)
+# Windows build
+npm run build:win
 
-4. Make your Changes and Submit a Pull Request!
+# Android build
+npm run build:android
+```
 
-We welcome all contributions, from fixing bugs and improving documentation to building new features.
+## Contributing
 
-🗺️ Project Roadmap
-Our goal is to launch the first public version of DhruvaX on 19th July 2025.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-[✅] Phase 1: Research & Team Building (Completed)
+## License
 
-[✅] Phase 2: First Prototype (MVP) (Completed)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-[✅] Phase 3: Testing & Website Setup (Completed)
+## Acknowledgments
 
-[In Progress] Phase 4: Public Launch & Marketing
-
-❤️ Support the Project
-DhruvaX is a community-driven project. You can support us by:
-
-⭐ Starring this repository!
-
-🗣️ Spreading the word on social media.
-
-contributiing code or ideas.
-
-Jai Hind!
+- Inspired by Comet Browser's excellent design and user experience
+- Built with Electron and modern web technologies
+- Community-driven development
