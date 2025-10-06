@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - Spàrsh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #1a1a2e;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .search-box {
+            flex: 1;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 0 16px;
+            color: white;
+            font-family: inherit;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn {
+            height: 40px;
+            padding: 0 20px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 20px;
+            color: #ef4444;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(239, 68, 68, 0.25);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .history-group {
+            margin-bottom: 24px;
+        }
+
+        .group-date {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(99, 102, 241, 0.3);
+            transform: translateX(4px);
+        }
+
+        .favicon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .item-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-url {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .item-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            flex-shrink: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>History</h1>
+            <div class="subtitle">Browse your recent activity</div>
+        </div>
+
+        <div class="controls">
+            <input type="text" class="search-box" id="search-box" placeholder="Search history...">
+            <button class="btn" id="clear-btn">Clear All History</button>
+        </div>
+
+        <div id="history-container">
+            <!-- History items will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        let historyData = [];
+
+        async function loadHistory() {
+            historyData = await ipcRenderer.invoke('get-history');
+            renderHistory(historyData);
+        }
+
+        function renderHistory(items) {
+            const container = document.getElementById('history-container');
+            
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📚</div>
+                        <div>No browsing history yet</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Group by date
+            const grouped = {};
+            items.forEach(item => {
+                const date = new Date(item.visitedAt);
+                const dateKey = date.toDateString();
+                if (!grouped[dateKey]) {
+                    grouped[dateKey] = [];
+                }
+                grouped[dateKey].push(item);
+            });
+
+            let html = '';
+            Object.keys(grouped).forEach(dateKey => {
+                html += `<div class="history-group">`;
+                html += `<div class="group-date">${formatDate(dateKey)}</div>`;
+                
+                grouped[dateKey].forEach(item => {
+                    const time = new Date(item.visitedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    html += `
+                        <div class="history-item" data-url="${item.url}">
+                            <div class="favicon">🌐</div>
+                            <div class="item-content">
+                                <div class="item-title">${escapeHtml(item.title)}</div>
+                                <div class="item-url">${escapeHtml(item.url)}</div>
+                            </div>
+                            <div class="item-time">${time}</div>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+
+            // Add click handlers
+            document.querySelectorAll('.history-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    window.location.href = item.dataset.url;
+                });
+            });
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const today = new Date();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+
+            if (date.toDateString() === today.toDateString()) {
+                return 'Today';
+            } else if (date.toDateString() === yesterday.toDateString()) {
+                return 'Yesterday';
+            } else {
+                return date.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Search
+        document.getElementById('search-box').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filtered = historyData.filter(item => 
+                item.title.toLowerCase().includes(query) || 
+                item.url.toLowerCase().includes(query)
+            );
+            renderHistory(filtered);
+        });
+
+        // Clear history
+        document.getElementById('clear-btn').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to clear all browsing history?')) {
+                await ipcRenderer.invoke('clear-history');
+                historyData = [];
+                renderHistory([]);
+            }
+        });
+
+        loadHistory();
+    </script>
+</body>
+</html>

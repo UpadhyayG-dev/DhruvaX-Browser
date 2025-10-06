@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spàrsh Browser</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Window Title Bar -->
+    <div class="titlebar">
+        <div class="titlebar-drag-region">
+            <div class="titlebar-icon">
+                <img src="../../assets/icon.png" alt="Spàrsh" onerror="this.style.display='none'">
+                <span class="titlebar-title">Spàrsh</span>
+            </div>
+        </div>
+        <div class="window-controls">
+            <button class="window-control" id="minimize-btn" title="Minimize">
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                    <rect x="0" y="5" width="12" height="2" fill="currentColor"/>
+                </svg>
+            </button>
+            <button class="window-control" id="maximize-btn" title="Maximize">
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                    <rect x="1" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+            </button>
+            <button class="window-control close" id="close-btn" title="Close">
+                <svg width="12" height="12" viewBox="0 0 12 12">
+                    <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+        <div class="tabs-container" id="tabs-container">
+            <!-- Tabs will be dynamically added here -->
+        </div>
+        <button class="new-tab-btn" id="new-tab-btn" title="New Tab">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+                <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </button>
+        <button class="menu-btn" id="menu-btn" title="Menu">
+            <svg width="16" height="16" viewBox="0 0 16 16">
+                <circle cx="8" cy="3" r="1.5" fill="currentColor"/>
+                <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+                <circle cx="8" cy="13" r="1.5" fill="currentColor"/>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="nav-buttons">
+            <button class="nav-btn" id="back-btn" title="Back" disabled>
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="nav-btn" id="forward-btn" title="Forward" disabled>
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M8 4L14 10L8 16" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="nav-btn" id="reload-btn" title="Reload">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M4 10C4 6.686 6.686 4 10 4C13.314 4 16 6.686 16 10C16 13.314 13.314 16 10 16C7.791 16 5.828 14.836 4.757 13.071M4 6V10H8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="nav-btn" id="home-btn" title="Home">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M3 10L10 3L17 10M5 9V17H8V13H12V17H15V9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="address-bar-container">
+            <div class="address-bar">
+                <div class="security-icon" id="security-icon">
+                    <svg width="16" height="16" viewBox="0 0 16 16">
+                        <path d="M8 1L3 3V7C3 10.5 5.5 13.5 8 15C10.5 13.5 13 10.5 13 7V3L8 1Z" stroke="currentColor" stroke-width="1.5" fill="none"/>
+                        <path d="M6 8L7.5 9.5L10 6.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <input type="text" id="address-input" placeholder="Search or enter address" autocomplete="off" spellcheck="false">
+                <button class="bookmark-btn" id="bookmark-btn" title="Bookmark this page">
+                    <svg width="16" height="16" viewBox="0 0 16 16">
+                        <path d="M3 2L3 14L8 11L13 14V2H3Z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="toolbar-buttons">
+            <button class="toolbar-btn" id="downloads-btn" title="Downloads">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path d="M10 3V13M10 13L6 9M10 13L14 9M4 17H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <button class="toolbar-btn" id="history-btn" title="History">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+            <button class="toolbar-btn" id="settings-btn" title="Settings">
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                    <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <path d="M10 2V4M10 16V18M18 10H16M4 10H2M15.5 4.5L14 6M6 14L4.5 15.5M15.5 15.5L14 14M6 6L4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Bookmarks Bar -->
+    <div class="bookmarks-bar" id="bookmarks-bar">
+        <!-- Bookmarks will be dynamically added here -->
+    </div>
+
+    <!-- Menu Dropdown -->
+    <div class="menu-dropdown" id="menu-dropdown" style="display: none;">
+        <div class="menu-section">
+            <button class="menu-item" id="new-tab-menu">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M2 2H14V14H2V2Z" stroke="currentColor" fill="none"/></svg>
+                New Tab
+                <span class="shortcut">Ctrl+T</span>
+            </button>
+            <button class="menu-item" id="new-window-menu">
+                <svg width="16" height="16" viewBox="0 0 16 16"><rect x="1" y="1" width="14" height="14" stroke="currentColor" fill="none"/></svg>
+                New Window
+                <span class="shortcut">Ctrl+N</span>
+            </button>
+            <button class="menu-item" id="new-private-menu">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 8C9.5 8 11 6.5 11 5C11 3.5 9.5 2 8 2C6.5 2 5 3.5 5 5C5 6.5 6.5 8 8 8ZM8 9C5.5 9 2 10.5 2 12V14H14V12C14 10.5 10.5 9 8 9Z" fill="currentColor"/></svg>
+                New Private Window
+                <span class="shortcut">Ctrl+Shift+N</span>
+            </button>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-section">
+            <button class="menu-item" id="history-menu">
+                <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="currentColor" fill="none"/><path d="M8 4V8L11 11" stroke="currentColor"/></svg>
+                History
+                <span class="shortcut">Ctrl+H</span>
+            </button>
+            <button class="menu-item" id="downloads-menu">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 2V10M8 10L5 7M8 10L11 7M3 14H13" stroke="currentColor" stroke-linecap="round"/></svg>
+                Downloads
+                <span class="shortcut">Ctrl+J</span>
+            </button>
+            <button class="menu-item" id="bookmarks-menu">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3 2V14L8 11L13 14V2H3Z" stroke="currentColor" fill="none"/></svg>
+                Bookmarks
+                <span class="shortcut">Ctrl+Shift+B</span>
+            </button>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-section">
+            <button class="menu-item" id="settings-menu">
+                <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2" stroke="currentColor" fill="none"/><path d="M8 1V3M8 13V15M15 8H13M3 8H1" stroke="currentColor"/></svg>
+                Settings
+            </button>
+            <button class="menu-item" id="about-menu">
+                <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" stroke="currentColor" fill="none"/><path d="M8 7V11M8 5V5.5" stroke="currentColor" stroke-linecap="round"/></svg>
+                About Spàrsh
+            </button>
+        </div>
+        <div class="menu-divider"></div>
+        <div class="menu-section">
+            <button class="menu-item" id="exit-menu">
+                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M6 2H3V14H6M10 5L13 8L10 11M13 8H6" stroke="currentColor" fill="none" stroke-linecap="round"/></svg>
+                Exit
+            </button>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

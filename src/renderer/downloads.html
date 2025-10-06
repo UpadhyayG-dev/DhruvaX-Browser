@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Downloads - Spàrsh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #1a1a2e;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .downloads-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .download-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.2s;
+        }
+
+        .download-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .download-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .download-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .download-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .download-info {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            gap: 12px;
+        }
+
+        .download-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .download-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #ec4899);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .download-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .status-downloading {
+            background: rgba(99, 102, 241, 0.15);
+            color: #6366f1;
+        }
+
+        .status-failed {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Downloads</h1>
+            <div class="subtitle">Manage your downloaded files</div>
+        </div>
+
+        <div id="downloads-container">
+            <!-- Downloads will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const { shell } = require('electron');
+        
+        let downloads = [];
+
+        async function loadDownloads() {
+            downloads = await ipcRenderer.invoke('get-downloads');
+            renderDownloads();
+        }
+
+        function renderDownloads() {
+            const container = document.getElementById('downloads-container');
+            
+            if (downloads.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📥</div>
+                        <div>No downloads yet</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '<div class="downloads-list">';
+            
+            downloads.forEach(download => {
+                const icon = getFileIcon(download.filename);
+                const size = formatBytes(download.totalBytes);
+                const status = download.status || 'completed';
+                const progress = download.progress || 100;
+                
+                html += `
+                    <div class="download-item">
+                        <div class="download-icon">${icon}</div>
+                        <div class="download-content">
+                            <div class="download-name">${escapeHtml(download.filename)}</div>
+                            <div class="download-info">
+                                <span>${size}</span>
+                                <span>•</span>
+                                <span class="status-badge status-${status}">${status}</span>
+                            </div>
+                            ${status === 'downloading' ? `
+                                <div class="download-progress">
+                                    <div class="download-progress-bar" style="width: ${progress}%"></div>
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="download-actions">
+                            ${status === 'completed' && download.path ? `
+                                <button class="action-btn" onclick="openFile('${escapeHtml(download.path)}')" title="Open">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                                        <path d="M14 9v4a1 1 0 01-1 1H3a1 1 0 01-1-1V9M8 1v10M8 11l-3-3M8 11l3-3" stroke-width="1.5" stroke-linecap="round"/>
+                                    </svg>
+                                </button>
+                                <button class="action-btn" onclick="showInFolder('${escapeHtml(download.path)}')" title="Show in folder">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor">
+                                        <path d="M2 3h5l2 2h5a1 1 0 011 1v7a1 1 0 01-1 1H2a1 1 0 01-1-1V4a1 1 0 011-1z" stroke-width="1.5"/>
+                                    </svg>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function getFileIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            const icons = {
+                'pdf': '📄',
+                'doc': '📝',
+                'docx': '📝',
+                'xls': '📊',
+                'xlsx': '📊',
+                'zip': '🗜️',
+                'rar': '🗜️',
+                '7z': '🗜️',
+                'jpg': '🖼️',
+                'jpeg': '🖼️',
+                'png': '🖼️',
+                'gif': '🖼️',
+                'mp4': '🎬',
+                'mp3': '🎵',
+                'exe': '⚙️',
+                'dmg': '💿'
+            };
+            return icons[ext] || '📎';
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function openFile(path) {
+            shell.openPath(path);
+        }
+
+        function showInFolder(path) {
+            shell.showItemInFolder(path);
+        }
+
+        // Listen for download updates
+        ipcRenderer.on('download-started', (event, download) => {
+            downloads.unshift(download);
+            renderDownloads();
+        });
+
+        ipcRenderer.on('download-progress', (event, download) => {
+            const index = downloads.findIndex(d => d.id === download.id);
+            if (index !== -1) {
+                downloads[index] = download;
+                renderDownloads();
+            }
+        });
+
+        ipcRenderer.on('download-completed', (event, download) => {
+            const index = downloads.findIndex(d => d.id === download.id);
+            if (index !== -1) {
+                downloads[index] = download;
+                renderDownloads();
+            }
+        });
+
+        loadDownloads();
+    </script>
+</body>
+</html>

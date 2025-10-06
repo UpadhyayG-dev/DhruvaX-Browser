@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            height: 100vh;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px 20px 20px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 48px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .logo {
+            font-size: 64px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -2px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 48px;
+            animation: fadeIn 0.6s ease 0.1s both;
+        }
+
+        .search-box {
+            width: 100%;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus-within {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .shortcuts-container {
+            width: 100%;
+            max-width: 900px;
+            animation: fadeIn 0.6s ease 0.2s both;
+        }
+
+        .shortcuts-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 16px;
+        }
+
+        .shortcut {
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            padding: 16px;
+        }
+
+        .shortcut:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .shortcut-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .shortcut-title {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .add-shortcut {
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        .add-shortcut:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .add-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stats-container {
+            margin-top: auto;
+            padding-top: 32px;
+            display: flex;
+            gap: 32px;
+            animation: fadeIn 0.6s ease 0.3s both;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <div class="logo">Spàrsh</div>
+        <div class="tagline">Your gateway to the web</div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor">
+                <circle cx="8.5" cy="8.5" r="5.5" stroke-width="2"/>
+                <path d="M12.5 12.5L16 16" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input type="text" class="search-input" id="search-input" placeholder="Search or enter address" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="shortcuts-container">
+        <div class="shortcuts-title">Quick Access</div>
+        <div class="shortcuts-grid" id="shortcuts-grid">
+            <a href="https://www.google.com" class="shortcut">
+                <div class="shortcut-icon">🔍</div>
+                <div class="shortcut-title">Google</div>
+            </a>
+            <a href="https://www.youtube.com" class="shortcut">
+                <div class="shortcut-icon">📺</div>
+                <div class="shortcut-title">YouTube</div>
+            </a>
+            <a href="https://www.github.com" class="shortcut">
+                <div class="shortcut-icon">💻</div>
+                <div class="shortcut-title">GitHub</div>
+            </a>
+            <a href="https://www.twitter.com" class="shortcut">
+                <div class="shortcut-icon">🐦</div>
+                <div class="shortcut-title">Twitter</div>
+            </a>
+            <a href="https://www.reddit.com" class="shortcut">
+                <div class="shortcut-icon">🤖</div>
+                <div class="shortcut-title">Reddit</div>
+            </a>
+            <a href="https://www.wikipedia.org" class="shortcut">
+                <div class="shortcut-icon">📚</div>
+                <div class="shortcut-title">Wikipedia</div>
+            </a>
+            <button class="shortcut add-shortcut" id="add-shortcut">
+                <div class="add-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 5V19M5 12H19" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="shortcut-title">Add Shortcut</div>
+            </button>
+        </div>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat">
+            <div class="stat-value">Fast</div>
+            <div class="stat-label">Performance</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">Secure</div>
+            <div class="stat-label">Privacy</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value">Free</div>
+            <div class="stat-label">Open Source</div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('search-input');
+        
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = searchInput.value.trim();
+                if (query) {
+                    if (query.includes('.') && !query.includes(' ')) {
+                        window.location.href = query.startsWith('http') ? query : 'https://' + query;
+                    } else {
+                        window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                    }
+                }
+            }
+        });
+
+        // Handle shortcuts
+        document.querySelectorAll('.shortcut:not(.add-shortcut)').forEach(shortcut => {
+            shortcut.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = shortcut.href;
+            });
+        });
+
+        document.getElementById('add-shortcut').addEventListener('click', () => {
+            const title = prompt('Shortcut title:');
+            if (!title) return;
+            
+            const url = prompt('Shortcut URL:');
+            if (!url) return;
+            
+            const icon = prompt('Emoji icon (optional):', '🌐');
+            
+            // In a real implementation, this would save to localStorage or settings
+            alert('Shortcut feature will be enhanced in the full version!');
+        });
+
+        // Focus search on load
+        searchInput.focus();
+    </script>
+</body>
+</html>

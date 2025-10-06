@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Spàrsh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #1a1a2e;
+            color: white;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        .settings-section {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .setting-item {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            flex: 1;
+        }
+
+        .setting-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .setting-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle.active {
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .toggle.active .toggle-thumb {
+            left: 25px;
+        }
+
+        select, input[type="text"] {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            min-width: 200px;
+        }
+
+        select option {
+            background: #16213e;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .button.secondary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .button.secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .about-section {
+            text-align: center;
+            padding: 32px;
+        }
+
+        .logo-large {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 16px;
+        }
+
+        .version {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+
+        .credits {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Settings</h1>
+            <div class="subtitle">Customize your browsing experience</div>
+        </div>
+
+        <!-- General Settings -->
+        <div class="settings-section">
+            <div class="section-title">
+                <div class="section-icon">⚙️</div>
+                General
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-name">Default Search Engine</div>
+                    <div class="setting-description">Choose your preferred search engine</div>
+                </div>
+                <select id="search-engine">
+                    <option value="https://www.google.com/search?q=">Google</option>
+                    <option value="https://www.bing.com/search?q=">Bing</option>
+                    <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+                    <option value="https://search.brave.com/search?q=">Brave</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-name">Home Page</div>
+                    <div class="setting-description">Set your default home page</div>
+                </div>
+                <input type="text" id="home-page" placeholder="sparsh://newtab">
+            </div>
+        </div>
+
+        <!-- Privacy & Security -->
+        <div class="settings-section">
+            <div class="section-title">
+                <div class="section-icon">🔒</div>
+                Privacy & Security
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-name">Ad Blocker</div>
+                    <div class="setting-description">Block ads and trackers for faster browsing</div>
+                </div>
+                <div class="toggle active" id="ad-blocker">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-name">Do Not Track</div>
+                    <div class="setting-description">Send "Do Not Track" requests to websites</div>
+                </div>
+                <div class="toggle active" id="do-not-track">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-name">Clear browsing data on exit</div>
+                    <div class="setting-description">Automatically clear cookies and cache when closing</div>
+                </div>
+                <div class="toggle" id="clear-on-exit">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appearance -->
+        <div class="settings-section">
+            <div class="section-title">
+                <div class="section-icon">🎨</div>
+                Appearance
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-name">Dark Mode</div>
+                    <div class="setting-description">Use dark theme throughout the browser</div>
+                </div>
+                <div class="toggle active" id="dark-mode">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-name">Show Bookmarks Bar</div>
+                    <div class="setting-description">Display bookmarks below the address bar</div>
+                </div>
+                <div class="toggle active" id="show-bookmarks">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Downloads -->
+        <div class="settings-section">
+            <div class="section-title">
+                <div class="section-icon">📥</div>
+                Downloads
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-name">Download Location</div>
+                    <div class="setting-description">Choose where to save downloaded files</div>
+                </div>
+                <button class="button secondary" id="change-download-path">Choose Folder</button>
+            </div>
+            <div class="setting-item">
+                <div class="setting-label">
+                    <div class="setting-name">Ask where to save files</div>
+                    <div class="setting-description">Prompt for download location before saving</div>
+                </div>
+                <div class="toggle" id="ask-download-location">
+                    <div class="toggle-thumb"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About -->
+        <div class="settings-section about-section">
+            <div class="logo-large">Spàrsh</div>
+            <div class="version">Version 1.0.0</div>
+            <div class="credits">
+                Free & Open Source Browser<br>
+                Built with Electron • MIT License
+            </div>
+            <div style="margin-top: 24px;">
+                <button class="button">Check for Updates</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        
+        let settings = {};
+
+        async function loadSettings() {
+            settings = await ipcRenderer.invoke('get-settings');
+            applySettings();
+        }
+
+        function applySettings() {
+            document.getElementById('search-engine').value = settings.defaultSearchEngine || 'https://www.google.com/search?q=';
+            document.getElementById('home-page').value = settings.homePage || 'sparsh://newtab';
+            
+            setToggle('ad-blocker', settings.adBlockEnabled !== false);
+            setToggle('do-not-track', settings.doNotTrack !== false);
+            setToggle('clear-on-exit', settings.clearOnExit === true);
+            setToggle('dark-mode', settings.darkMode !== false);
+            setToggle('show-bookmarks', settings.showBookmarks !== false);
+            setToggle('ask-download-location', settings.askDownloadLocation === true);
+        }
+
+        function setToggle(id, active) {
+            const toggle = document.getElementById(id);
+            if (active) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+
+        // Toggle handlers
+        document.querySelectorAll('.toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                this.classList.toggle('active');
+                saveSettings();
+            });
+        });
+
+        // Select handlers
+        document.getElementById('search-engine').addEventListener('change', saveSettings);
+        document.getElementById('home-page').addEventListener('change', saveSettings);
+
+        async function saveSettings() {
+            const newSettings = {
+                defaultSearchEngine: document.getElementById('search-engine').value,
+                homePage: document.getElementById('home-page').value,
+                adBlockEnabled: document.getElementById('ad-blocker').classList.contains('active'),
+                doNotTrack: document.getElementById('do-not-track').classList.contains('active'),
+                clearOnExit: document.getElementById('clear-on-exit').classList.contains('active'),
+                darkMode: document.getElementById('dark-mode').classList.contains('active'),
+                showBookmarks: document.getElementById('show-bookmarks').classList.contains('active'),
+                askDownloadLocation: document.getElementById('ask-download-location').classList.contains('active')
+            };
+            
+            await ipcRenderer.invoke('update-settings', newSettings);
+        }
+
+        document.getElementById('change-download-path').addEventListener('click', () => {
+            alert('Download path selection will be implemented in the full version!');
+        });
+
+        loadSettings();
+    </script>
+</body>
+</html>

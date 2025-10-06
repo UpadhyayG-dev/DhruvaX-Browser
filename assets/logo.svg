@@ -1,0 +1,19 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="128" cy="128" r="120" fill="url(#grad1)"/>
+  
+  <!-- Abstract "S" shape representing Spàrsh -->
+  <path d="M 90 80 Q 70 95 75 115 Q 80 135 100 145 L 128 160 Q 150 170 165 185 Q 180 200 175 220 Q 170 240 150 250 L 140 245 Q 155 235 158 220 Q 161 205 150 195 L 128 180 Q 108 170 95 155 Q 82 140 85 120 Q 88 100 105 85 L 90 80 Z" fill="white" opacity="0.95"/>
+  
+  <!-- Speed lines suggesting fast browsing -->
+  <path d="M 40 128 L 80 128" stroke="white" stroke-width="6" stroke-linecap="round" opacity="0.3"/>
+  <path d="M 50 108 L 75 108" stroke="white" stroke-width="5" stroke-linecap="round" opacity="0.2"/>
+  <path d="M 50 148 L 75 148" stroke="white" stroke-width="5" stroke-linecap="round" opacity="0.2"/>
+</svg>
