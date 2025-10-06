@@ -1,0 +1,274 @@
+/* Tab Bar Styles */
+#tab-bar {
+  height: 40px;
+  background: var(--surface-color);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.tabs-container {
+  display: flex;
+  flex: 1;
+  gap: 2px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.tabs-container::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  min-width: 200px;
+  max-width: 240px;
+  height: 32px;
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.tab:hover {
+  background: var(--hover-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab.active {
+  background: var(--background-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 -2px 0 var(--primary-color);
+  z-index: 1;
+}
+
+.tab.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+.tab-content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 12px;
+  gap: 8px;
+  min-width: 0;
+}
+
+.tab-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
+}
+
+.tab-title {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.tab-close {
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  opacity: 0;
+}
+
+.tab:hover .tab-close {
+  opacity: 1;
+}
+
+.tab-close:hover {
+  background: var(--active-color);
+  color: var(--text-primary);
+}
+
+.tab.loading .tab-icon {
+  animation: spin 1s linear infinite;
+}
+
+.tab.private {
+  background: linear-gradient(135deg, #1e293b, #334155);
+  color: white;
+}
+
+.tab.private .tab-title {
+  color: white;
+}
+
+.tab.private .tab-close {
+  color: #94a3b8;
+}
+
+.tab.private:hover {
+  background: linear-gradient(135deg, #334155, #475569);
+}
+
+/* New Tab Button */
+.new-tab-button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--primary-color);
+  color: white;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.new-tab-button:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+.new-tab-button:active {
+  transform: scale(0.95);
+}
+
+/* Tab Animations */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+.tab.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.tab.slide-out {
+  animation: slideOut 0.3s ease-in;
+}
+
+/* Tab Context Menu */
+.tab-context-menu {
+  position: absolute;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  padding: 4px 0;
+  z-index: 1000;
+  min-width: 160px;
+}
+
+.tab-context-menu-item {
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-context-menu-item:hover {
+  background: var(--hover-color);
+}
+
+.tab-context-menu-item.danger {
+  color: #ef4444;
+}
+
+.tab-context-menu-item.danger:hover {
+  background: #fef2f2;
+}
+
+/* Responsive Tab Bar */
+@media (max-width: 768px) {
+  .tab {
+    min-width: 150px;
+    max-width: 180px;
+  }
+  
+  .tab-title {
+    font-size: 12px;
+  }
+  
+  .tab-content {
+    padding: 0 8px;
+  }
+}
+
+/* Tab Drag and Drop */
+.tab.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg);
+  z-index: 1000;
+}
+
+.tab.drag-over {
+  border-left: 3px solid var(--primary-color);
+}
+
+.tab-drop-indicator {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--primary-color);
+  z-index: 999;
+  pointer-events: none;
+}

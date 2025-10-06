@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spàrsh Browser</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/tabs.css">
+    <link rel="stylesheet" href="styles/address-bar.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/settings.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Title Bar -->
+        <div id="title-bar">
+            <div class="title-bar-left">
+                <div class="window-controls">
+                    <button id="minimize-btn" class="window-control">−</button>
+                    <button id="maximize-btn" class="window-control">□</button>
+                    <button id="close-btn" class="window-control">×</button>
+                </div>
+            </div>
+            <div class="title-bar-center">
+                <span class="app-title">Spàrsh</span>
+            </div>
+            <div class="title-bar-right"></div>
+        </div>
+
+        <!-- Main Browser Interface -->
+        <div id="browser-interface">
+            <!-- Tab Bar -->
+            <div id="tab-bar">
+                <div class="tabs-container">
+                    <div class="tab active" data-tab-id="1">
+                        <div class="tab-content">
+                            <div class="tab-icon">🌐</div>
+                            <span class="tab-title">New Tab</span>
+                            <button class="tab-close">×</button>
+                        </div>
+                    </div>
+                </div>
+                <button id="new-tab-btn" class="new-tab-button">+</button>
+            </div>
+
+            <!-- Address Bar and Controls -->
+            <div id="address-bar-container">
+                <div class="nav-buttons">
+                    <button id="back-btn" class="nav-btn" disabled>←</button>
+                    <button id="forward-btn" class="nav-btn" disabled>→</button>
+                    <button id="reload-btn" class="nav-btn">↻</button>
+                </div>
+                
+                <div class="address-bar-wrapper">
+                    <input type="text" id="address-bar" placeholder="Search or enter address" />
+                    <div class="address-bar-icons">
+                        <button id="bookmark-btn" class="address-icon">★</button>
+                        <button id="security-btn" class="address-icon">🔒</button>
+                    </div>
+                </div>
+
+                <div class="right-controls">
+                    <button id="sidebar-toggle" class="control-btn">☰</button>
+                    <button id="menu-btn" class="control-btn">⋮</button>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div id="main-content">
+                <!-- Sidebar -->
+                <div id="sidebar" class="sidebar-hidden">
+                    <div class="sidebar-header">
+                        <h3>Spàrsh</h3>
+                        <button id="sidebar-close">×</button>
+                    </div>
+                    <div class="sidebar-content">
+                        <div class="sidebar-section">
+                            <h4>Bookmarks</h4>
+                            <div class="bookmark-list">
+                                <div class="bookmark-item">
+                                    <span class="bookmark-icon">📖</span>
+                                    <span class="bookmark-title">Spàrsh Homepage</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebar-section">
+                            <h4>History</h4>
+                            <div class="history-list">
+                                <div class="history-item">
+                                    <span class="history-time">2 min ago</span>
+                                    <span class="history-title">New Tab</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebar-section">
+                            <h4>Downloads</h4>
+                            <div class="downloads-list">
+                                <div class="download-item">
+                                    <span class="download-icon">📥</span>
+                                    <span class="download-name">No downloads yet</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Web Content Area -->
+                <div id="web-content">
+                    <div id="webview-container">
+                        <webview id="webview" src="about:blank" style="width: 100%; height: 100%;"></webview>
+                    </div>
+                    
+                    <!-- New Tab Page -->
+                    <div id="new-tab-page" class="new-tab-content">
+                        <div class="new-tab-header">
+                            <div class="sparsh-logo">
+                                <div class="logo-icon">🌌</div>
+                                <h1>Spàrsh</h1>
+                            </div>
+                            <p class="tagline">Browse the web with style</p>
+                        </div>
+                        
+                        <div class="search-container">
+                            <div class="search-box">
+                                <input type="text" id="new-tab-search" placeholder="Search the web or enter address" />
+                                <button id="search-btn">🔍</button>
+                            </div>
+                        </div>
+
+                        <div class="shortcuts-grid">
+                            <div class="shortcut-item">
+                                <div class="shortcut-icon">📚</div>
+                                <span class="shortcut-title">Bookmarks</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <div class="shortcut-icon">📖</div>
+                                <span class="shortcut-title">Reading List</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <div class="shortcut-icon">📱</div>
+                                <span class="shortcut-title">Mobile</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <div class="shortcut-icon">⚙️</div>
+                                <span class="shortcut-title">Settings</span>
+                            </div>
+                        </div>
+
+                        <div class="recent-sites">
+                            <h3>Recent Sites</h3>
+                            <div class="recent-sites-grid">
+                                <!-- Recent sites will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+    <script src="scripts/tabs.js"></script>
+    <script src="scripts/navigation.js"></script>
+    <script src="scripts/sidebar.js"></script>
+    <script src="scripts/settings.js"></script>
+</body>
+</html>
